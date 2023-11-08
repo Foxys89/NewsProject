@@ -58,6 +58,7 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_FORMS = {'signup': 'news.forms.BasicSignupForm'}
 
 SITE_ID = 1
 
@@ -67,8 +68,8 @@ SOCIALACCOUNT_PROVIDERS = {
         # (``socialaccount`` app) containing the required client
         # credentials, or list them here:
         'APP': {
-            'client_id': '123',
-            'secret': '456',
+            'client_id': '294173477934-qirjo51hm3nt73gbvh6p4g6mljru114n.apps.googleusercontent.com',
+            'secret': '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',
             'key': ''
         }
     }
