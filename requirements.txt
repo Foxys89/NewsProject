@@ -9,4 +9,4 @@ typing-extensions  4.8.0
 tzdata             2023.3
 django-allauth     0.58.1
 python-dotenv      1.0.0
-
+django-apscheduler 0.6.2
