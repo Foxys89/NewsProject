@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group, User
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
-from .models import Post
+from .models import Post, Category
 from .forms import PostForm, BaseRegisterForm
 from .filters import PostFilter
 
@@ -40,7 +40,6 @@ class PostSearch(ListView):
         context = super().get_context_data(**kwargs)
         context['filterset'] = self.filterset
         return context
-
 
 class NewsCreate(PermissionRequiredMixin, CreateView):
     permission_required = ('news.add_post',)
@@ -88,6 +87,46 @@ class IndexView(LoginRequiredMixin, TemplateView):
         return context
 
 
+class BaseRegisterView(CreateView):
+    model = User
+    form_class = BaseRegisterForm
+    success_url = '/'
+
+
+class CategoryList(ListView):
+    model = Category
+    template_name = 'category_list.html'
+    context_object_name = 'categories'
+    ordering = 'category_name'
+
+
+class PostByCategoryListView(ListView):
+    model = Post
+    template_name = 'post_list_by_category.html'
+    context_object_name = 'posts'
+    paginate = 10
+
+    def get_queryset(self):
+        self.category = Category.objects.get(pk=self.kwargs['pk'])
+        queryset = Post.objects.all().filter(post_category__pk=self.category.pk)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category_name'] = self.category.category_name
+        context['is_not_subscribed'] = self.request.user not in self.category.subscribers.all()
+        context['category'] = self.category
+        return context
+
+
+@login_required
+def subscribe(request, pk):
+    user = request.user
+    category = Category.objects.get(id=pk)
+    category.subscribers.add(user)
+    message = "Вы успешно подписались на рассылку новостей категории"
+    return render(request, 'subscribe.html', {'category': category, 'message': message})
+
 @login_required
 def upgrade_me(request):
     user = request.user
@@ -95,9 +134,3 @@ def upgrade_me(request):
     if not request.user.groups.filter(name='authors').exists():
         authors_group.user_set.add(user)
     return redirect('/')
-
-
-class BaseRegisterView(CreateView):
-    model = User
-    form_class = BaseRegisterForm
-    success_url = '/'
