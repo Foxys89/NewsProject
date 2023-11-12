@@ -29,7 +29,7 @@ def my_job():
         }
     )
     msg = EmailMultiAlternatives(
-        subject='Статьи за неделю',
+        subject='Публикации за неделю',
         body='',
         from_email=settings.DEFAULT_FROM_EMAIL,
         to=subscribers,
