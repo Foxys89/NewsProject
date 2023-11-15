@@ -1,4 +1,4 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
@@ -26,7 +26,7 @@ def send_notifications(preview, pk, title, subscribers):
     msg.send()
 
 
-@receiver(post_save, sender=Post)
+@receiver(m2m_changed, sender=Post)
 def new_post_notify(sender, instance, created, **kwargs):
     if created:
         subject = f'Новая публикация {Post.post_name} {Post.post_time}'
