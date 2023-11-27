@@ -1,8 +1,7 @@
 {% extends 'flatpages/default.html' %}
-
 {% load custom_filters %}
-
 {% load custom_tags %}
+{% load cache %}
 
 {% block title %}
 Публикации
@@ -10,30 +9,31 @@
 
 {% block content %}
     <h1>Все публикации</h1>
-    <h3>Публикаций: {{ posts | length }}</h3>
+    {% cache 30 block %}
+        <h3>Публикаций: {{ posts | length }}</h3>
 
-    <hr>
-    {% if posts %}
-        <table>
-            <tr>
-                <td>Заголовок</td>
-                <td>Дата публикации</td>
-                <td>Превью</td>
-            </tr>
+        <hr>
+        {% if posts %}
+            <table>
+                <tr>
+                    <td>Заголовок</td>
+                    <td>Дата публикации</td>
+                    <td>Превью</td>
+                </tr>
 
-            {% for post in posts %}
-            <tr>
-                <td>{{post.post_name | censor}}</td>
-                <td>{{post.post_time | date:'M d Y'}}</td>
-                <td>{{post.post_text | truncatewords:20 | censor}}</td>
-            </tr>
-            {% endfor %}
+                {% for post in posts %}
+                <tr>
+                    <td>{{post.post_name | censor}}</td>
+                    <td>{{post.post_time | date:'M d Y'}}</td>
+                    <td>{{post.post_text | truncatewords:20 | censor}}</td>
+                </tr>
+                {% endfor %}
 
-        </table>
-    {% else %}
-        <h2>Публикаций нет!</h2>
-    {% endif %}
-
+            </table>
+        {% else %}
+            <h2>Публикаций нет!</h2>
+        {% endif %}
+    {% endcache %}
     {% if page_obj.has_previous %}
        <a href="?{% url_replace page=1 %}">1</a>
        {% if page_obj.previous_page_number != 1 %}
