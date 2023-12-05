@@ -12,3 +12,5 @@ python-dotenv      1.0.0
 django-apscheduler 0.6.2
 celery             5.3.5
 redis              5.0.1
+django-modeltranslation 0.18.11
+gettext 0.21
